@@ -10,7 +10,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 			domain="dev-yb8l6fr6pu5d8zju.us.auth0.com"
 			clientId="VGlFNN7PvkuUfBqPrmz3Y5UxthafpQwb"
 			authorizationParams={{
-				redirect_uri: "http://localhost:5173",
+				redirect_uri: "https://basic-node-js-demo-opal.vercel.app/",
 			}}
 			audience="https://dev-yb8l6fr6pu5d8zju.us.auth0.com/api/v2/"
 			scope="openid profile email"
