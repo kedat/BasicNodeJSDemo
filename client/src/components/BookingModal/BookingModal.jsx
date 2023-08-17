@@ -6,9 +6,10 @@ import UserDetailContext from "../../context/UserDetailContext.js";
 import { bookVisit, handleStripePayment } from "../../utils/api.js";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 const BookingModal = ({ opened, setOpened, email, propertyId, data }) => {
-
+	const navigate = useNavigate();
   const [value, setValue] = useState(null);
   const {
     userDetails: { token },
@@ -33,11 +34,13 @@ const BookingModal = ({ opened, setOpened, email, propertyId, data }) => {
 
   
   const handleClickBookings = async () => {
+    await bookVisit(value, propertyId, email, token);
     const payload = [data];
     toast.loading('Redirecting...');
     const response = await handleStripePayment(payload);  
-    window.location.replace(response.data.url);
-    bookVisit(value, propertyId, email, token);
+    setTimeout(() => {
+      window.location.replace(response.data.url);
+		}, 3000);
   };
 
   const { mutate, isLoading } = useMutation({
