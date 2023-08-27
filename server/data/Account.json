@@ -1,0 +1,18 @@
+[
+	{
+		"email": "datuser@gmail.com",
+		"password": "dat123"
+	},
+	{
+		"email": "datuser2@gmail.com",
+		"password": "dat0210"
+	},
+	{
+		"email": "datadmin@gmail.com",
+		"password": "dat123"
+	},
+	{
+		"email": "datadmin2@gmail.com",
+		"password": "dat123456"
+	}
+]

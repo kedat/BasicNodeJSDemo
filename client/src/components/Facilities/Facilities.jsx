@@ -6,7 +6,7 @@ import UserDetailContext from "../../context/UserDetailContext";
 import useProperties from "../../hooks/useProperties.jsx";
 import { useMutation } from "react-query";
 import { toast } from "react-toastify";
-import { createResidency } from "../../utils/api";
+import { createPlace } from "../../utils/api";
 const Facilities = ({
 	prevStep,
 	propertyDetails,
@@ -35,7 +35,7 @@ const Facilities = ({
 		if (!hasErrors) {
 			setPropertyDetails((prev) => ({
 				...prev,
-        facilities: { bedrooms, parkings, bathrooms },
+				facilities: { bedrooms, parkings, bathrooms },
 				userEmail: user?.email,
 			}));
 			mutate();
@@ -50,7 +50,7 @@ const Facilities = ({
 
 	const { mutate, isLoading } = useMutation({
 		mutationFn: () =>
-			createResidency(
+			createPlace(
 				{
 					...propertyDetails,
 					facilities: { bedrooms, parkings, bathrooms },

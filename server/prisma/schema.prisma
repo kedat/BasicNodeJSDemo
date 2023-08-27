@@ -8,29 +8,48 @@ datasource db {
 }
 
 model User {
-    id               String      @id @default(auto()) @map("_id") @db.ObjectId
+    id               String    @id @default(auto()) @map("_id") @db.ObjectId
     name             String?
-    email            String      @unique
+    email            String    @unique
+    password         String
     image            String?
-    bookedVisits     Json[]
-    favResidenciesID String[]    @db.ObjectId
-    ownedResidencies Residency[] @relation("Owner")
+    isAdmin          Boolean
+    bookedVisits     Booking[] @relation("Booked")
+    favResidenciesID String[]  @db.ObjectId
+    ownedPlaces      Place[]   @relation("Owner")
 }
 
-model Residency {
-    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+model Place {
+    id          String    @id @default(auto()) @map("_id") @db.ObjectId
     title       String
     description String
     price       Int
-    address     String
+    address     String    @unique
     city        String
     country     String
     image       String
     facilities  Json
     userEmail   String
-    owner       User     @relation("Owner", fields: [userEmail], references: [email])
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    owner       User      @relation("Owner", fields: [userEmail], references: [email])
+    placeBooked Booking[] @relation("PlaceBooked")
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
 
     @@unique(fields: [address, userEmail])
+}
+
+model Booking {
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    placeId      String
+    price        Int
+    status       String
+    userEmail    String
+    date         String
+    placeAddress String
+    booked       User     @relation("Booked", fields: [userEmail], references: [email])
+    place        Place    @relation("PlaceBooked", fields: [placeAddress], references: [address])
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    @@unique(fields: [status, userEmail, placeId, date])
 }
