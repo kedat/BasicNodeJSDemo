@@ -1,7 +1,7 @@
-import asyncHandler from "express-async-handler";
-import { prisma } from "../config/prismaConfig.js";
+const asyncHandler = require("express-async-handler");
+const { prisma } = require("../config/prismaConfig.js");
 
-export const isBooked = asyncHandler(async (userEmail, placeId, date) => {
+const isBooked = asyncHandler(async (userEmail, placeId, date) => {
   try {
     const alreadyBooked = await prisma.booking.findFirst({
       where: { userEmail, status: "Create", placeId, date },
@@ -15,7 +15,7 @@ export const isBooked = asyncHandler(async (userEmail, placeId, date) => {
   }
 });
 
-export const bookAVisit = asyncHandler(async (data) => {
+const bookAVisit = asyncHandler(async (data) => {
   try {
     const bookResult = await prisma.booking.create({ data });
     return bookResult;
@@ -24,29 +24,29 @@ export const bookAVisit = asyncHandler(async (data) => {
   }
 });
 
-export const getBookingByEmail = asyncHandler(async (userEmail) => {
+const getBookingByEmail = asyncHandler(async (userEmail) => {
   try {
     const bookedList = await prisma.booking.findMany({
       where: { userEmail },
     });
-    return bookedList
+    return bookedList;
   } catch (err) {
     throw new Error(err.message);
   }
 });
 
-export const getBookingDetail = asyncHandler(async (bookingID) => {
+const getBookingDetailService = asyncHandler(async (bookingID) => {
   try {
     const bookingDetail = await prisma.booking.findUnique({
       where: { id: bookingID },
     });
-    return bookingDetail
+    return bookingDetail;
   } catch (err) {
     throw new Error(err.message);
   }
 });
 
-export const updateABooking = asyncHandler(async ({ bookingId, status }) => {
+const updateABooking = asyncHandler(async ({ bookingId, status }) => {
   try {
     await prisma.booking.update({
       where: { id: bookingId },
@@ -56,3 +56,12 @@ export const updateABooking = asyncHandler(async ({ bookingId, status }) => {
     throw new Error(err.message);
   }
 });
+
+
+module.exports = {
+  isBooked,
+  bookAVisit,
+  getBookingByEmail,
+  getBookingDetailService,
+  updateABooking,
+};

@@ -1,22 +1,14 @@
-import asyncHandler from "express-async-handler";
-import jwt from "jsonwebtoken";
-import { decodeToken } from "../utils/getUserDetail.js";
-import statusCode from "../constants/statusCode.js";
-import ConvertUTCToBrowserTime from "../utils/ConvertUTCToBrowserTime.js";
-import { getPlaceDetail } from "../services/placeService.js";
-import { bookAVisit, getBookingByEmail, getBookingDetail, isBooked, updateABooking } from "../services/bookingService.js";
+const { decodeToken } = require("../utils/getUserDetail");
+const statusCode = require("../constants/statusCode");
+const { getPlaceDetail } = require("../services/placeService");
+const { bookAVisit, getBookingByEmail, getBookingDetailService, isBooked, updateABooking } = require("../services/bookingService");
 
 // function to book a visit 
-export const bookVisit = asyncHandler(async (req, res) => {
+const bookVisit = async (req, res) => {
   const { placeId, date } = req.body;
   const userDetail = await decodeToken(req.headers.authorization.slice(7));
 
   const currentDate = new Date();
-  if (date <= ConvertUTCToBrowserTime(currentDate)) {
-    res
-      .status(statusCode.CONFLICT)
-      .json({ message: "Date must be greater than today" });
-  }
   try {
     const placeDetail = await getPlaceDetail(placeId);
     if (!placeDetail) {
@@ -40,10 +32,10 @@ export const bookVisit = asyncHandler(async (req, res) => {
   } catch (err) {
     throw new Error(err.message);
   }
-});
+};
 
-// function to get all bookings of a user
-export const getAllBookingByEmail = asyncHandler(async (req, res) => {
+// function to get all booking of a user
+const getAllBookingByEmail = async (req, res) => {
   const userDetail = await decodeToken(req.headers.authorization.slice(7))
   try {
     const bookings = await getBookingByEmail(userDetail.email);
@@ -51,16 +43,31 @@ export const getAllBookingByEmail = asyncHandler(async (req, res) => {
   } catch (err) {
     throw new Error(err.message);
   }
-});
+};
+
+// function to get booking detail
+const getBookingDetail = async (req, res) => {
+  const userDetail = await decodeToken(req.headers.authorization.slice(7));
+  const { bookingId } = req.params;
+  try {
+    const booking = await getBookingDetail(bookingId);
+    if (userDetail.isAdmin || userDetail.email === booking.userEmail)
+      res.status(statusCode.OK).send(bookings);
+    else
+      res.status(statusCode.BAD_REQUEST).send({ message: "You can not see this booking!" });
+  } catch (err) {
+    throw new Error(err.message);
+  }
+};
 
 // function to cancel the booking
-export const updateBooking = asyncHandler(async (req, res) => {
+const updateBookingStatus = async (req, res) => {
   const userDetail = await decodeToken(req.headers.authorization.slice(7))
 
   const { bookingId } = req.params;
   const { status } = req.body;
   try {
-    const bookingDetail = await getBookingDetail(bookingId);
+    const bookingDetail = await getBookingDetailService(bookingId);
     if (!bookingDetail) {
       res.status(statusCode.NOT_FOUND).json({ message: "Booking not found" });
     } else {
@@ -78,7 +85,7 @@ export const updateBooking = asyncHandler(async (req, res) => {
             res.status(statusCode.OK).send({ message: "Booking updated" });
           }
           else {
-            res.status(statusCode.BAD_REQUEST).json({ message: "You can not update this booking!" });
+            res.status(statusCode.BAD_REQUEST).json({ message: "Invalid status" });
           }
         }
       };
@@ -86,4 +93,11 @@ export const updateBooking = asyncHandler(async (req, res) => {
   } catch (err) {
     throw new Error(err.message);
   }
-});
+};
+
+module.exports = {
+  bookVisit,
+  getAllBookingByEmail,
+  getBookingDetail,
+  updateBookingStatus,
+};

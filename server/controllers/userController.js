@@ -1,32 +1,32 @@
-import asyncHandler from "express-async-handler";
-import statusCode from "../constants/statusCode.js";
-import { findUser, createNewUser } from "../services/userService.js";
-import { createToken } from "../utils/createToken.js";
+const asyncHandler = require("express-async-handler");
+const statusCode = require("../constants/statusCode");
+const { findUser, createNewUser } = require("../services/userService");
+const { createToken } = require("../utils/createToken");
 
 // function to create a new user
-export const createUser = asyncHandler(async (req, res) => {
+const createUser = async (req, res) => {
   const { email, password } = req.body;
-  const userExists = await findUser(email);
-  if (userExists) {
+  const userExist = await findUser(email);
+  if (userExist) {
     res.status(statusCode.CREATED).send({ message: "This email is used" });
   } else {
     const user = await createNewUser(req.body);
-    res.status(statusCode.OK).send({
-      message: "Account registered successfully",
-    });
+    res.status(statusCode.OK).send({ message: "Account registered successfully" });
   }
-});
+};
 
 // function to login
-export const loginUser = asyncHandler(async (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
   const user = await findUser(email, password)
   if (user) {
-    const token = createToken(user.id, email, user.isAdmin );
+    const token = createToken(user.id, email, user.isAdmin);
     res.status(statusCode.OK).send({ message: "Login successfully", token });
   } else {
-    res.status(statusCode.NOT_FOUND).send({
-      message: "Wrong email or password",
-    });
+    res.status(statusCode.NOT_FOUND).send({ message: "Wrong email or password" });
   }
-});
+};
+
+module.exports = {
+  createUser, loginUser
+};

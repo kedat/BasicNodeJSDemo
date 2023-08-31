@@ -1,8 +1,9 @@
-import asyncHandler from "express-async-handler";
-import Stripe from "stripe";
+const asyncHandler = require("express-async-handler");
+const Stripe = require("stripe");
+const statusCode = require("../constants/statusCode");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-export const checkout = asyncHandler(async (req, res) => {
+const checkout = asyncHandler(async (req, res) => {
   const { title, image, price, id } = req.body[0]
   try {
     const params = {
@@ -28,8 +29,10 @@ export const checkout = asyncHandler(async (req, res) => {
     };
     //   checkout session
     const session = await stripe.checkout.sessions.create(params);
-    res.status(200).send(session);
+    res.status(statusCode.OK).send(session);
   } catch (error) {
     res.send(error);
   }
 });
+
+module.exports = { checkout }

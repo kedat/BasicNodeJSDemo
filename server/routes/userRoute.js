@@ -1,9 +1,10 @@
-import express from "express";
-import { createUser, loginUser } from "../controllers/userController.js";
-import jwtCheck from "../config/auth0Config.js";
-const router = express.Router();
+const { createUser, loginUser } = require("../controllers/userController");
+const jwtCheck = require("../config/authConfig");
+const { registerSchema, loginSchema } = require("../validation/userSchema");
+const { validateRequestBody } = require("../middleware/validateRequestBody");
+const userRoute = require("express").Router();
 
-router.post("/register", createUser);
-router.post("/login", loginUser);
+userRoute.post("/register", validateRequestBody(registerSchema), createUser);
+userRoute.post("/login", validateRequestBody(loginSchema), loginUser);
 
-export { router as userRoute };
+module.exports = userRoute;

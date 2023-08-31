@@ -1,7 +1,7 @@
-import asyncHandler from "express-async-handler";
-import { prisma } from "../config/prismaConfig.js";
+const asyncHandler = require("express-async-handler");
+const { prisma } = require("../config/prismaConfig.js");
 
-export const createPlaceService = asyncHandler(async (data) => {
+const createPlaceService = asyncHandler(async (data) => {
   try {
     const place = await prisma.place.create({ data });
     return place;
@@ -10,7 +10,7 @@ export const createPlaceService = asyncHandler(async (data) => {
   }
 });
 
-export const getPlaces = asyncHandler(async () => {
+const getPlaces = asyncHandler(async () => {
   try {
     const places = await prisma.place.findMany({
       orderBy: {
@@ -23,7 +23,7 @@ export const getPlaces = asyncHandler(async () => {
   }
 });
 
-export const getPlaceDetail = asyncHandler(async (placeId) => {
+const getPlaceDetail = asyncHandler(async (placeId) => {
   try {
     const detail = await prisma.place.findUnique({
       where: { id: placeId },
@@ -34,7 +34,7 @@ export const getPlaceDetail = asyncHandler(async (placeId) => {
   }
 });
 
-export const deleteAPlace = asyncHandler(async (placeId) => {
+const deleteAPlace = asyncHandler(async (placeId) => {
   try {
     const detail = await prisma.place.delete({
       where: { id: placeId },
@@ -44,3 +44,10 @@ export const deleteAPlace = asyncHandler(async (placeId) => {
     throw new Error(err.message);
   }
 });
+
+module.exports = {
+  createPlaceService,
+  getPlaces,
+  getPlaceDetail,
+  deleteAPlace,
+};

@@ -1,8 +1,8 @@
-import asyncHandler from "express-async-handler";
+const asyncHandler = require("express-async-handler");
 
-import { prisma } from "../config/prismaConfig.js";
+const { prisma } = require("../config/prismaConfig.js");
 
-export const findUser = asyncHandler(async (email, password) => {
+const findUser = asyncHandler(async (email, password) => {
   try {
     const user = await prisma.user.findUnique({ where: { email, password } });
     return user;
@@ -11,7 +11,7 @@ export const findUser = asyncHandler(async (email, password) => {
   }
 });
 
-export const createNewUser = asyncHandler(async (data) => {
+const createNewUser = asyncHandler(async (data) => {
   try {
     const user = await prisma.user.create({ data });
     return user;
@@ -19,3 +19,7 @@ export const createNewUser = asyncHandler(async (data) => {
     throw new Error(err.message);
   }
 });
+
+module.exports = {
+  findUser, createNewUser
+};

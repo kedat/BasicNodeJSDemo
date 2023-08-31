@@ -1,11 +1,12 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import { userRoute } from './routes/userRoute.js';
-import { placeRoute } from './routes/placeRoute.js';
-import { paymentRoute } from './routes/paymentRoute.js';
-import { bookingRoute } from './routes/bookingRouter.js';
+const express = require('express');
+const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const placeRoute  = require('./routes/placeRoute.js');
+const  paymentRoute  = require('./routes/paymentRoute.js');
+const  bookingRoute = require('./routes/bookingRouter.js');
+const userRoute = require('./routes/userRoute.js');
+const route = require("express").Router()
 dotenv.config()
 
 const app = express();
@@ -16,11 +17,14 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(cors())
 
-app.listen(PORT, ()=> {
+app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-app.use('/api/user', userRoute)
-app.use("/api/place", placeRoute)
-app.use("/api/booking", bookingRoute)
-app.use("/api/payment", paymentRoute)
+route.use('/api/user', userRoute)
+route.use("/api/place", placeRoute)
+route.use("/api/booking", bookingRoute)
+route.use("/api/payment", paymentRoute)
+app.use(route)
+
+module.exports = app;

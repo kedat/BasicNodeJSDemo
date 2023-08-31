@@ -1,11 +1,12 @@
-import express from "express";
-import { createPlace, getAllPlace, getPlace, deletePlace } from "../controllers/placeController.js";
-import jwtCheck from "../config/auth0Config.js";
-const router = express.Router();
+const { jwtCheck } = require("../config/authConfig");
+const { createPlace, getAllPlace, getPlace, deletePlace } = require("../controllers/placeController");
+const { validateRequestBody } = require("../middleware/validateRequestBody");
+const { createPlaceSchema } = require("../validation/placeSchema");
+const placeRoute =  require("express").Router();
 
-router.post("/create", jwtCheck, createPlace);
-router.get("/allPlace", getAllPlace);
-router.get("/:placeId", getPlace);
-router.delete("/:placeId",jwtCheck, deletePlace);
+placeRoute.post("/create", jwtCheck, validateRequestBody(createPlaceSchema), createPlace);
+placeRoute.get("/allPlace", getAllPlace);
+placeRoute.get("/:placeId", getPlace);
+placeRoute.delete("/:placeId", jwtCheck, deletePlace);
 
-export { router as placeRoute }
+module.exports = placeRoute;

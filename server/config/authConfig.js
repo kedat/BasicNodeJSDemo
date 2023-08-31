@@ -1,6 +1,6 @@
-import jwt from "jsonwebtoken";
-import statusCode from "../constants/statusCode.js";
-import { findUser } from "../services/userService.js";
+const jwt = require("jsonwebtoken");
+const statusCode = require("../constants/statusCode.js");
+const { findUser } = require("../services/userService.js");
 
 const jwtCheck = async (req, res, next) => {
     let token;
@@ -29,4 +29,6 @@ const jwtCheck = async (req, res, next) => {
 
 };
 
-export default jwtCheck
+module.exports = {
+    jwtCheck
+  };

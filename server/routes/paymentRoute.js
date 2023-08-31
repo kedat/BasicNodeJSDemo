@@ -1,8 +1,7 @@
-import express from "express";
+const { checkout } = require("../controllers/paymentController");
+const paymentRoute =  require("express").Router();
 
-import { checkout } from "../controllers/paymentCntrl.js";
-const router = express.Router();
+paymentRoute.post("/checkout", checkout);
 
-router.post("/checkout", checkout);
+module.exports = paymentRoute;
 
-export { router as paymentRoute };
